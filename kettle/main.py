@@ -6,7 +6,7 @@ import config
 import utils
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit, \
     QFileDialog, QLabel, QWidget, QHBoxLayout, QTreeWidget, QSizePolicy, QSplitter, \
-    QLayout, QTreeWidgetItem
+    QLayout, QTreeWidgetItem, QMessageBox
 from PyQt5.QtGui import QIcon, QFont
 from syntax import SyntaxHighlighter
 
@@ -101,6 +101,11 @@ class Kettle(QMainWindow):
                 self.text.setText(text)
         except IsADirectoryError as error:
             print("This is not a file, is a directory : " + str(error))
+        except FileNotFoundError as error:
+            print("No such file found : " + str(error))
+            QMessageBox.question(self, 'Error', 'Error occured : ' + str(error), QMessageBox.Close)
+
+
 
     def open_prof(self):
         self.proj_folder = str(
