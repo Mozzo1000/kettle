@@ -88,15 +88,19 @@ class Kettle(QMainWindow):
     def tree_clicked(self):
         print(self.treeView.selectedItems()[0].text(0))
         print(self.proj_folder)
-        file = open(
-            self.proj_folder +
-            "/" +
-            self.treeView.selectedItems()[0].text(0),
-            'r')
-        self.text.clear()
-        with file:
-            text = file.read()
-            self.text.setText(text)
+        try:
+            file = open(
+                self.proj_folder +
+                "/" +
+                self.treeView.selectedItems()[0].text(0),
+                'r')
+
+            self.text.clear()
+            with file:
+                text = file.read()
+                self.text.setText(text)
+        except IsADirectoryError as error:
+            print("This is not a file, is a directory : " + str(error))
 
     def open_prof(self):
         self.proj_folder = str(
