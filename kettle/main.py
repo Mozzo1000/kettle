@@ -2,6 +2,8 @@ import sys
 import os
 import subprocess
 import qdarkstyle
+import config
+import utils
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit, \
     QFileDialog, QLabel, QWidget, QHBoxLayout, QTreeWidget, QSizePolicy, QSplitter, \
     QLayout, QTreeWidgetItem
@@ -62,8 +64,10 @@ class Kettle(QMainWindow):
     def view_status(self, state):
         if state:
             self.statusbar.show()
+            config.update_config('General', 'view_statusbar', 'True')
         else:
             self.statusbar.hide()
+            config.update_config('General', 'view_statusbar', 'False')
 
     def status_line_position(self):
         line = self.text.textCursor().blockNumber()
@@ -134,6 +138,9 @@ class Kettle(QMainWindow):
         self.text.cursorPositionChanged.connect(self.status_line_position)
         self.splitter.setSizes([5, 300])
 
+        if not utils.str2bool(config.get_setting('General', 'view_statusbar')):
+            self.statusbar.hide()
+
         exit_action = QAction(QIcon('exit.png'), '&Exit', self)
         exit_action.setShortcut('Ctrl+Q')
         exit_action.setStatusTip('Exit application')
@@ -187,7 +194,7 @@ class Kettle(QMainWindow):
         run_action.setShortcut('Ctrl+SPACE')
 
         view_status_action = QAction('View statusbar', self, checkable=True)
-        view_status_action.setChecked(True)
+        view_status_action.setChecked(utils.str2bool(config.get_setting('General', 'view_statusbar')))
         view_status_action.triggered.connect(self.view_status)
 
         menubar = self.menuBar()
@@ -224,5 +231,8 @@ if __name__ == '__main__':
     app.setWindowIcon(QIcon('../assets/icon.png'))
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     print(os.path.dirname(os.path.abspath(__file__)))
+
+    config.create_config()
+
     kettle = Kettle()
     sys.exit(app.exec_())
