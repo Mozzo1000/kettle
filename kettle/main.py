@@ -89,11 +89,7 @@ class Kettle(QMainWindow):
         print(self.treeView.selectedItems()[0].text(0))
         print(self.proj_folder)
         try:
-            file = open(
-                self.proj_folder +
-                "/" +
-                self.treeView.selectedItems()[0].text(0),
-                'r')
+            file = open(utils.find_file_location(self.treeView.selectedItems()[0].text(0), self.proj_folder), 'r')
 
             self.text.clear()
             with file:
@@ -104,8 +100,6 @@ class Kettle(QMainWindow):
         except FileNotFoundError as error:
             print("No such file found : " + str(error))
             QMessageBox.question(self, 'Error', 'Error occured : ' + str(error), QMessageBox.Close)
-
-
 
     def open_prof(self):
         self.proj_folder = str(
