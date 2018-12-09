@@ -2,6 +2,7 @@ import sys
 import os
 import subprocess
 import config
+import style_rc
 import utils
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit, \
     QFileDialog, QLabel, QWidget, QHBoxLayout, QTreeWidget, QSizePolicy, QSplitter, \
