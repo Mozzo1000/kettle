@@ -7,8 +7,8 @@ import utils
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit, \
     QFileDialog, QLabel, QWidget, QHBoxLayout, QTreeWidget, QSizePolicy, QSplitter, \
     QLayout, QTreeWidgetItem, QMessageBox
-from PyQt5.QtGui import QIcon, QFont
-from PyQt5.QtCore import QFile, QTextStream
+from PyQt5.QtGui import QIcon, QFont, QDesktopServices
+from PyQt5.QtCore import QFile, QTextStream, QUrl
 from syntax import SyntaxHighlighter
 
 
@@ -108,6 +108,11 @@ class Kettle(QMainWindow):
                 self, 'Select Directory'))
         self.load_project_structure(self.proj_folder, self.treeView)
 
+    def open_github_link(self):
+        url = QUrl('https://github.com/Mozzo1000/kettle/')
+        if not QDesktopServices.openUrl(url):
+            QMessageBox.warning(self, 'Open URL', 'Could not open url')
+
     def init_ui(self):
         self.resize(800, 600)
         self.setWindowTitle('Kettle')
@@ -201,11 +206,17 @@ class Kettle(QMainWindow):
         view_status_action.setChecked(utils.str2bool(config.get_setting('General', 'view_statusbar')))
         view_status_action.triggered.connect(self.view_status)
 
+        github_link_action = QAction('Github', self)
+        github_link_action.triggered.connect(self.open_github_link)
+
+        about_action = QAction('About', self)
+
         menubar = self.menuBar()
         file_menu = menubar.addMenu('&File')
         edit_menu = menubar.addMenu('&Edit')
         run_menu = menubar.addMenu('&Run')
         view_menu = menubar.addMenu('&View')
+        help_menu = menubar.addMenu('&Help')
 
         file_menu.addAction(new_action)
         file_menu.addAction(open_action)
@@ -225,6 +236,9 @@ class Kettle(QMainWindow):
         run_menu.addAction(run_action)
 
         view_menu.addAction(view_status_action)
+
+        help_menu.addAction(github_link_action)
+        help_menu.addAction(about_action)
 
         self.showMaximized()
         self.show()
