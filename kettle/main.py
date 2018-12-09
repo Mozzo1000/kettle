@@ -1,13 +1,13 @@
 import sys
 import os
 import subprocess
-import qdarkstyle
 import config
 import utils
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit, \
     QFileDialog, QLabel, QWidget, QHBoxLayout, QTreeWidget, QSizePolicy, QSplitter, \
     QLayout, QTreeWidgetItem, QMessageBox
 from PyQt5.QtGui import QIcon, QFont
+from PyQt5.QtCore import QFile, QTextStream
 from syntax import SyntaxHighlighter
 
 
@@ -232,7 +232,9 @@ class Kettle(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon('../assets/icon.png'))
-    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+    style = QFile('../assets/style/style.qss')
+    style.open(QFile.ReadOnly | QFile.Text)
+    app.setStyleSheet(QTextStream(style).readAll())
     print(os.path.dirname(os.path.abspath(__file__)))
 
     config.create_config()
