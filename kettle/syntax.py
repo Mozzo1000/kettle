@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QRegExp, Qt
-from PyQt5.QtGui import QFont, QSyntaxHighlighter, QTextCharFormat
+from PyQt5.QtGui import QFont, QSyntaxHighlighter, QTextCharFormat, QColor
 
 
 class SyntaxHighlighter(QSyntaxHighlighter):
@@ -7,7 +7,7 @@ class SyntaxHighlighter(QSyntaxHighlighter):
         super(SyntaxHighlighter, self).__init__(parent)
 
         keyword_format = QTextCharFormat()
-        keyword_format.setForeground(Qt.darkBlue)
+        keyword_format.setForeground(QColor(255, 152, 0))
         keyword_format.setFontWeight(QFont.Bold)
 
         keyword_patterns = ["\\bclass\\b", "\\bprint\\b", "\\bif\\b", "\\belse\\b",
@@ -17,15 +17,15 @@ class SyntaxHighlighter(QSyntaxHighlighter):
         self.highlightning_rules = [(QRegExp(pattern), keyword_format)
                                     for pattern in keyword_patterns]
 
-        class_format = QTextCharFormat()
-        class_format.setForeground(Qt.darkMagenta)
+        """class_format = QTextCharFormat()
+        class_format.setForeground(Qt.darkGreen)
         class_format.setFontWeight(QFont.Bold)
         self.highlightning_rules.append((QRegExp("\\bQ[A-Za-z]+\\b"),
-                                         class_format))
+                                         class_format))"""
 
         single_line_comment_format = QTextCharFormat()
-        single_line_comment_format.setForeground(Qt.red)
-        self.highlightning_rules.append((QRegExp("//[^\n]*"),
+        single_line_comment_format.setForeground(Qt.gray)
+        self.highlightning_rules.append((QRegExp("#[^\n]*"),
                                          single_line_comment_format))
 
         self.multi_line_comment_format = QTextCharFormat()
@@ -37,7 +37,7 @@ class SyntaxHighlighter(QSyntaxHighlighter):
         self.highlightning_rules.append((QRegExp("\'.*\'"), quotation_format))
 
         function_format = QTextCharFormat()
-        function_format.setForeground(Qt.blue)
+        function_format.setForeground(QColor(245, 254, 220))
         function_format.setFontItalic(True)
         self.highlightning_rules.append((QRegExp("\\b[A-Za-z0-9_]+(?=\\()"),
                                          function_format))
