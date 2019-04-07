@@ -10,6 +10,8 @@ from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit,
 from PyQt5.QtGui import QIcon, QFont, QDesktopServices
 from PyQt5.QtCore import QFile, QTextStream, QUrl
 from syntax import SyntaxHighlighter
+from ui.settings import Settings
+from ui.about import About
 
 
 class Kettle(QMainWindow):
@@ -108,10 +110,18 @@ class Kettle(QMainWindow):
                 self, 'Select Directory'))
         self.load_project_structure(self.proj_folder, self.treeView)
 
+    def open_settings(self):
+        settings = Settings(self)
+        settings.show()
+
     def open_github_link(self):
         url = QUrl('https://github.com/Mozzo1000/kettle/')
         if not QDesktopServices.openUrl(url):
             QMessageBox.warning(self, 'Open URL', 'Could not open url')
+
+    def open_about(self):
+        about = About(self)
+        about.show()
 
     def init_ui(self):
         self.resize(800, 600)
@@ -174,6 +184,9 @@ class Kettle(QMainWindow):
         open_proj_action = QAction('Open Project', self)
         open_proj_action.triggered.connect(self.open_prof)
 
+        settings_action = QAction('Settings', self)
+        settings_action.triggered.connect(self.open_settings)
+
         undo_action = QAction('Undo', self)
         undo_action.triggered.connect(self.text.undo)
         undo_action.setShortcut('Ctrl+Z')
@@ -210,6 +223,7 @@ class Kettle(QMainWindow):
         github_link_action.triggered.connect(self.open_github_link)
 
         about_action = QAction('About', self)
+        about_action.triggered.connect(self.open_about)
 
         menubar = self.menuBar()
         file_menu = menubar.addMenu('&File')
@@ -223,6 +237,7 @@ class Kettle(QMainWindow):
         file_menu.addAction(open_proj_action)
         file_menu.addAction(save_action)
         file_menu.addAction(save_as_action)
+        file_menu.addAction(settings_action)
         file_menu.addAction(exit_action)
 
         edit_menu.addAction(undo_action)
