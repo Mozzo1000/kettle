@@ -7,7 +7,7 @@ import utils
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit, \
     QFileDialog, QLabel, QWidget, QHBoxLayout, QTreeWidget, QSizePolicy, QSplitter, \
     QLayout, QTreeWidgetItem, QMessageBox
-from PyQt5.QtGui import QIcon, QFont, QDesktopServices
+from PyQt5.QtGui import QIcon, QFont, QDesktopServices, QFontDatabase
 from PyQt5.QtCore import QFile, QTextStream, QUrl
 from syntax import SyntaxHighlighter
 from ui.settings import Settings
@@ -23,9 +23,10 @@ class Kettle(QMainWindow):
 
     def text_window(self):
         self.text = QTextEdit(self.central_widget)
+        QFontDatabase.addApplicationFont('../assets/font/Monoid-Regular.ttf')
         font = QFont()
-        font.setFamily("Segoe UI")
-        font.setPointSize(12)
+        font.setFamily("Monoid")
+        font.setPointSize(11)
         self.text.setFont(font)
         self.text.setTabStopWidth(30)
         self.highlighter = SyntaxHighlighter(self.text.document())
