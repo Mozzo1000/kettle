@@ -14,6 +14,7 @@ def create_config():
         config.add_section('General')
 
         config.set('General', 'view_statusbar', 'True')
+        config.set('General', 'font', 'Monoid')
 
         with open(CONFIG_PATH + CONFIG_FILE, 'w') as config_file:
             config.write(config_file)

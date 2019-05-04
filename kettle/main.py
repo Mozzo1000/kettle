@@ -23,9 +23,9 @@ class Kettle(QMainWindow):
 
     def text_window(self):
         self.text = QTextEdit(self.central_widget)
-        QFontDatabase.addApplicationFont('../assets/font/Monoid-Regular.ttf')
         font = QFont()
-        font.setFamily("Monoid")
+        print(config.get_setting('General', 'font'))
+        font.setFamily(config.get_setting('General', 'font'))
         font.setPointSize(11)
         self.text.setFont(font)
         self.text.setTabStopWidth(30)
@@ -129,6 +129,7 @@ class Kettle(QMainWindow):
         self.setWindowTitle('Kettle')
 
         self.central_widget = QWidget(self)
+        QFontDatabase.addApplicationFont('../assets/font/Monoid-Regular.ttf')
 
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
