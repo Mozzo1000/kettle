@@ -5,7 +5,7 @@ import style_rc
 import utils
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit, \
     QFileDialog, QLabel, QWidget, QHBoxLayout, QTreeWidget, QSizePolicy, QSplitter, \
-    QLayout, QTreeWidgetItem, QMessageBox
+    QLayout, QTreeWidgetItem, QMessageBox, QTabWidget
 from PyQt5.QtGui import QIcon, QFont, QDesktopServices, QFontDatabase
 from PyQt5.QtCore import QFile, QTextStream, QUrl
 from syntax import SyntaxHighlighter
@@ -23,35 +23,20 @@ class Kettle(QMainWindow):
         self.init_ui()
         self.filename = "untitled"
 
-    def text_window(self):
-        self.text = QTextEdit(self.central_widget)
-        font = QFont()
-        print(config.get_setting('General', 'font'))
-        font.setFamily(config.get_setting('General', 'font'))
-        font.setPointSize(11)
-        self.text.setFont(font)
-        self.text.setTabStopWidth(30)
-        self.highlighter = SyntaxHighlighter(self.text.document())
-
-    def create_new(self):
-        print("Create new file")
-        self.text.clear()
-        self.filename = "untitled"
-
     def save_file(self):
         name = self.filename[0]
         if not self.filename or self.filename == "untitled":
             name = QFileDialog.getSaveFileName(self, 'Save File')[0]
 
         file = open(name, 'wt')
-        save_text = self.text.toPlainText()
+        save_text = self.current_editor.toPlainText()
         file.write(save_text)
         file.close()
 
     def save_file_as(self):
         name = QFileDialog.getSaveFileName(self, 'Save File')[0]
         file = open(name, 'wt')
-        save_text = self.text.toPlainText()
+        save_text = self.current_editor.toPlainText()
         file.write(save_text)
         file.close()
 
@@ -59,10 +44,9 @@ class Kettle(QMainWindow):
         name = QFileDialog.getOpenFileName(self, 'Open File')
         self.filename = name
         file = open(name[0], 'r')
-        self.text.clear()
         with file:
-            text = file.read()
-            self.text.setText(text)
+            self.new_document(title=os.path.basename(self.filename[0]))
+            self.current_editor.setText(file.read())
 
     def run(self):
         subprocess.Popen('python ' + self.filename[0])
@@ -76,8 +60,8 @@ class Kettle(QMainWindow):
             config.update_config('General', 'view_statusbar', 'False')
 
     def status_line_position(self):
-        line = self.text.textCursor().blockNumber()
-        column = self.text.textCursor().columnNumber()
+        line = self.current_editor.textCursor().blockNumber()
+        column = self.current_editor.textCursor().columnNumber()
         line_column = ("Line: " + str(line) + " | " + "Column: " + str(column))
         self.statusbar.showMessage(line_column)
 
@@ -97,10 +81,10 @@ class Kettle(QMainWindow):
         try:
             file = open(self.treeView.selectedItems()[0].text(1), 'r')
 
-            self.text.clear()
             with file:
                 text = file.read()
-                self.text.setText(text)
+                self.new_document(title=os.path.basename(self.treeView.selectedItems()[0].text(1)))
+                self.current_editor.setText(text)
         except IsADirectoryError as error:
             print("This is not a file, is a directory : " + str(error))
         except FileNotFoundError as error:
@@ -126,9 +110,39 @@ class Kettle(QMainWindow):
         about = About(self)
         about.show()
 
+    def create_editor(self):
+        text_editor = QTextEdit()
+        font = QFont()
+        print(config.get_setting('General', 'font'))
+        font.setFamily(config.get_setting('General', 'font'))
+        font.setPointSize(11)
+        text_editor.setFont(font)
+        text_editor.setTabStopWidth(30)
+        self.highlighter = SyntaxHighlighter(text_editor.document())
+        return text_editor
+
+    def remove_editor(self, index):
+        self.tab_widget.removeTab(index)
+        if index < len(self.editors):
+            del self.editors[index]
+
+    def change_text_editor(self, index):
+        if index < len(self.editors):
+            self.current_editor = self.editors[index]
+
+    def new_document(self, checked=False, title="Untitled"):
+        self.current_editor = self.create_editor()
+        self.current_editor.cursorPositionChanged.connect(self.status_line_position)
+        self.editors.append(self.current_editor)
+        self.tab_widget.addTab(self.current_editor, str(title) + " - " + str(len(self.editors)))
+        self.tab_widget.setCurrentWidget(self.current_editor)
+
     def init_ui(self):
         self.resize(800, 600)
         self.setWindowTitle('Kettle')
+
+        self.current_editor = self.create_editor()
+        self.editors = []
 
         self.central_widget = QWidget(self)
         QFontDatabase.addApplicationFont('../assets/font/Monoid-Regular.ttf')
@@ -142,7 +156,12 @@ class Kettle(QMainWindow):
 
         self.horizontal_layoutW = QWidget(self.central_widget)
         self.splitter = QSplitter(self.central_widget)
-        self.text_window()
+
+        self.tab_widget = QTabWidget(self.central_widget)
+        self.tab_widget.setTabsClosable(True)
+        self.tab_widget.currentChanged.connect(self.change_text_editor)
+        self.tab_widget.tabCloseRequested.connect(self.remove_editor)
+        self.new_document()
 
         print(self.sizeHint())
         self.horizontal_layout = QHBoxLayout(self.central_widget)
@@ -151,7 +170,7 @@ class Kettle(QMainWindow):
         self.treeView.setHeaderLabel('Project View')
         self.treeView.itemDoubleClicked.connect(self.tree_clicked)
         self.splitter.addWidget(self.treeView)
-        self.splitter.addWidget(self.text)
+        self.splitter.addWidget(self.tab_widget)
 
         self.horizontal_layout.addWidget(self.splitter)
         self.setCentralWidget(self.central_widget)
@@ -159,8 +178,8 @@ class Kettle(QMainWindow):
         label2 = QLabel("testest")
         self.statusbar.addPermanentWidget(label)
         self.statusbar.addWidget(label2)
-        self.text.cursorPositionChanged.connect(self.status_line_position)
         self.splitter.setSizes([5, 300])
+
 
         if not utils.str2bool(config.get_setting('General', 'view_statusbar')):
             self.statusbar.hide()
@@ -171,7 +190,7 @@ class Kettle(QMainWindow):
         exit_action.triggered.connect(qApp.quit)
 
         new_action = QAction('New', self)
-        new_action.triggered.connect(self.create_new)
+        new_action.triggered.connect(self.new_document)
         new_action.setShortcut('Ctrl+N')
 
         save_action = QAction('Save', self)
@@ -193,27 +212,27 @@ class Kettle(QMainWindow):
         settings_action.triggered.connect(self.open_settings)
 
         undo_action = QAction('Undo', self)
-        undo_action.triggered.connect(self.text.undo)
+        undo_action.triggered.connect(self.current_editor.undo)
         undo_action.setShortcut('Ctrl+Z')
 
         redo_action = QAction('Redo', self)
-        redo_action.triggered.connect(self.text.redo)
+        redo_action.triggered.connect(self.current_editor.redo)
         redo_action.setShortcut('Ctrl+Y')
 
         cut_action = QAction('Cut', self)
-        cut_action.triggered.connect(self.text.cut)
+        cut_action.triggered.connect(self.current_editor.cut)
         cut_action.setShortcut('Ctrl+X')
 
         copy_action = QAction('Copy', self)
-        copy_action.triggered.connect(self.text.copy)
+        copy_action.triggered.connect(self.current_editor.copy)
         copy_action.setShortcut('Ctrl+C')
 
         paste_action = QAction('Paste', self)
-        paste_action.triggered.connect(self.text.paste)
+        paste_action.triggered.connect(self.current_editor.paste)
         paste_action.setShortcut('Ctrl+V')
 
         select_all_action = QAction('Select all', self)
-        select_all_action.triggered.connect(self.text.selectAll)
+        select_all_action.triggered.connect(self.current_editor.selectAll)
         select_all_action.setShortcut('Ctrl+A')
 
         run_action = QAction('Run', self)
