@@ -13,6 +13,8 @@ from syntax import SyntaxHighlighter
 from ui.settings import Settings
 from ui.about import About
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 
 class Kettle(QMainWindow):
 
@@ -85,9 +87,9 @@ class Kettle(QMainWindow):
             parent_itm = QTreeWidgetItem(tree, [os.path.basename(element), os.path.join(startpath, element)])
             if os.path.isdir(path_info):
                 self.load_project_structure(path_info, parent_itm)
-                parent_itm.setIcon(0, QIcon('../assets/folder.png'))
+                parent_itm.setIcon(0, QIcon(os.path.join(basedir, '../assets/folder.png')))
             else:
-                parent_itm.setIcon(0, QIcon('../assets/file.png'))
+                parent_itm.setIcon(0, QIcon(os.path.join(basedir, '../assets/file.png')))
 
     def tree_clicked(self):
         print(self.treeView.selectedItems()[0].text(0))
@@ -264,9 +266,6 @@ class Kettle(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon('../assets/icon.png'))
-
-    basedir = os.path.abspath(os.path.dirname(__file__))
-
     style = QFile(os.path.join(basedir, '../assets/style/style.qss'))
     style.open(QFile.ReadOnly | QFile.Text)
     app.setStyleSheet(QTextStream(style).readAll())
