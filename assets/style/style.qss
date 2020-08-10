@@ -655,6 +655,11 @@ QComboBox:hover,QPushButton:hover,QAbstractSpinBox:hover,QLineEdit:hover,QTextEd
     /*border: 1px solid #D1DBCB;*/
 }
 
+QPushButton:hover
+{
+    border: 1px solid #D1DBCB;
+}
+
 QComboBox:on
 {
     padding-top: 0px;
