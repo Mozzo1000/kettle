@@ -264,7 +264,10 @@ class Kettle(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon('../assets/icon.png'))
-    style = QFile('../assets/style/style.qss')
+
+    basedir = os.path.abspath(os.path.dirname(__file__))
+
+    style = QFile(os.path.join(basedir, '../assets/style/style.qss'))
     style.open(QFile.ReadOnly | QFile.Text)
     app.setStyleSheet(QTextStream(style).readAll())
     print(os.path.dirname(os.path.abspath(__file__)))
