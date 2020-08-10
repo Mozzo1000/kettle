@@ -43,7 +43,9 @@ class Kettle(QMainWindow):
     def open_file(self):
         name = QFileDialog.getOpenFileName(self, 'Open File')
         self.filename = name
-        file = open(name[0], 'r')
+
+        file = open(name[0], 'r', encoding='utf-8', errors='ignore')
+
         with file:
             self.new_document(title=os.path.basename(self.filename[0]))
             self.current_editor.setText(file.read())
@@ -83,7 +85,7 @@ class Kettle(QMainWindow):
         print(self.treeView.selectedItems()[0].text(0))
         print(self.proj_folder)
         try:
-            file = open(self.treeView.selectedItems()[0].text(1), 'r')
+            file = open(self.treeView.selectedItems()[0].text(1), 'r', encoding='utf-8', errors='ignore')
 
             with file:
                 text = file.read()
