@@ -1,38 +1,30 @@
 import configparser
 import os
 
-CONFIG_PATH = os.path.expanduser('~/.kettle/')
-CONFIG_FILE = 'config.ini'
 
+class Config:
+    def __init__(self, config_path, config_name):
+        self.config_path = config_path
+        self.config_name = config_name
+        self.config = configparser.ConfigParser()
+        self.config.read(config_path + config_name)
 
-def create_config():
-    if not os.path.exists(CONFIG_PATH):
-        os.makedirs(CONFIG_PATH)
-    if not os.path.exists(CONFIG_PATH + CONFIG_FILE):
-        config = configparser.ConfigParser()
+        if not os.path.exists(config_path):
+            os.makedirs(config_path)
+        if not os.path.exists(config_path + config_name):
 
-        config.add_section('General')
+            self.config.add_section('General')
 
-        config.set('General', 'view_statusbar', 'True')
-        config.set('General', 'font', 'Monoid')
+            self.config.set('General', 'view_statusbar', 'True')
+            self.config.set('General', 'font', 'Monoid')
 
-        with open(CONFIG_PATH + CONFIG_FILE, 'w') as config_file:
-            config.write(config_file)
+            with open(config_path + config_name, 'w') as config_file:
+                self.config.write(config_file)
 
+    def get_setting(self, section, setting, fallback=None):
+        return self.config.get(section, setting, fallback=fallback)
 
-def get_config():
-    config = configparser.ConfigParser()
-    config.read(CONFIG_PATH + CONFIG_FILE)
-    return config
-
-
-def get_setting(section, setting, fallback=None):
-    config = get_config()
-    return config.get(section, setting, fallback=fallback)
-
-
-def update_config(section, setting, value):
-    config = get_config()
-    config.set(section, setting, value)
-    with open(CONFIG_PATH + CONFIG_FILE, 'w') as config_file:
-        config.write(config_file)
+    def update_config(self, section, setting, value):
+        self.config.set(section, setting, value)
+        with open(self.config_path + self.config_name, 'w') as config_file:
+            self.config.write(config_file)

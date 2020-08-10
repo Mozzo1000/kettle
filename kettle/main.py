@@ -1,7 +1,6 @@
 import sys
 import os
 import subprocess
-import config
 import style_rc
 import utils
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit, \
@@ -12,12 +11,13 @@ from PyQt5.QtCore import QFile, QTextStream, QUrl
 from syntax import SyntaxHighlighter
 from ui.settings import Settings
 from ui.about import About
+from config import Config
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+config = Config(os.path.expanduser('~/.kettle/'), 'config.ini')
 
 
 class Kettle(QMainWindow):
-
     def __init__(self):
         super().__init__()
         self.init_ui()
@@ -271,8 +271,6 @@ if __name__ == '__main__':
     style.open(QFile.ReadOnly | QFile.Text)
     app.setStyleSheet(QTextStream(style).readAll())
     print(os.path.dirname(os.path.abspath(__file__)))
-
-    config.create_config()
 
     kettle = Kettle()
     sys.exit(app.exec_())
