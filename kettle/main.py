@@ -74,6 +74,10 @@ class Kettle(QMainWindow):
                 parent_itm.setIcon(0, QIcon(os.path.join(basedir, '../assets/folder.png')))
             else:
                 parent_itm.setIcon(0, QIcon(os.path.join(basedir, '../assets/file.png')))
+            if not utils.str2bool(config.get_setting('General', 'show_hidden_items', 'False')):
+                if element.startswith('.'):
+                    parent_itm.setHidden(True)
+
 
     def tree_clicked(self):
         print(self.treeView.selectedItems()[0].text(0))
