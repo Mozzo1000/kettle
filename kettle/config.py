@@ -17,6 +17,7 @@ class Config:
 
             self.config.set('General', 'view_statusbar', 'True')
             self.config.set('General', 'font', 'Monoid')
+            self.config.set('General', 'use_dark_theme', 'True')
 
             with open(config_path + config_name, 'w') as config_file:
                 self.config.write(config_file)
