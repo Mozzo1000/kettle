@@ -82,7 +82,7 @@ class Kettle(QMainWindow):
     def load_project_structure(self, startpath, tree):
         for element in os.listdir(startpath):
             path_info = startpath + "/" + element
-            parent_itm = QTreeWidgetItem(tree, [os.path.basename(element)])
+            parent_itm = QTreeWidgetItem(tree, [os.path.basename(element), os.path.join(startpath, element)])
             if os.path.isdir(path_info):
                 self.load_project_structure(path_info, parent_itm)
                 parent_itm.setIcon(0, QIcon('../assets/folder.png'))
@@ -93,7 +93,7 @@ class Kettle(QMainWindow):
         print(self.treeView.selectedItems()[0].text(0))
         print(self.proj_folder)
         try:
-            file = open(utils.find_file_location(self.treeView.selectedItems()[0].text(0), self.proj_folder), 'r')
+            file = open(self.treeView.selectedItems()[0].text(1), 'r')
 
             self.text.clear()
             with file:
