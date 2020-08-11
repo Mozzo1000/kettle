@@ -14,13 +14,15 @@ class Config:
         if not os.path.exists(config_path + config_name):
 
             self.config.add_section('General')
+            self.config.add_section('view')
 
-            self.config.set('General', 'view_statusbar', 'True')
             self.config.set('General', 'font', 'Monoid')
             self.config.set('General', 'use_dark_theme', 'True')
             self.config.set('General', 'show_hidden_items', 'False')
             self.config.set('General', 'last_opened_project', '')
-            self.config.set('General', 'view_projectview', 'True')
+
+            self.config.set('view', 'view_statusbar', 'True')
+            self.config.set('view', 'view_projectview', 'True')
 
             with open(config_path + config_name, 'w') as config_file:
                 self.config.write(config_file)

@@ -70,18 +70,18 @@ class Kettle(QMainWindow):
     def view_status(self, state):
         if state:
             self.statusbar.show()
-            config.update_config('General', 'view_statusbar', 'True')
+            config.update_config('view', 'view_statusbar', 'True')
         else:
             self.statusbar.hide()
-            config.update_config('General', 'view_statusbar', 'False')
+            config.update_config('view', 'view_statusbar', 'False')
 
     def view_projectview(self, state):
         if state:
             self.dock_widget.show()
-            config.update_config('General', 'view_projectview', 'True')
+            config.update_config('view', 'view_projectview', 'True')
         else:
             self.dock_widget.hide()
-            config.update_config('General', 'view_projectview', 'False')
+            config.update_config('view', 'view_projectview', 'False')
 
     def status_line_position(self):
         line = self.current_editor.textCursor().blockNumber()
@@ -216,7 +216,7 @@ class Kettle(QMainWindow):
         self.horizontal_layout.addWidget(self.splitter)
         self.setCentralWidget(self.central_widget)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.dock_widget)
-        if utils.str2bool(config.get_setting('General', 'view_projectview', 'True')):
+        if utils.str2bool(config.get_setting('view', 'view_projectview', 'True')):
             self.dock_widget.show()
         else:
             self.dock_widget.hide()
@@ -227,7 +227,7 @@ class Kettle(QMainWindow):
         self.statusbar.addWidget(label2)
         self.splitter.setSizes([5, 300])
 
-        if not utils.str2bool(config.get_setting('General', 'view_statusbar')):
+        if not utils.str2bool(config.get_setting('view', 'view_statusbar')):
             self.statusbar.hide()
 
         if config.get_setting('General', 'last_opened_project'):
@@ -289,10 +289,10 @@ class Kettle(QMainWindow):
         run_action.setShortcut('Ctrl+SPACE')
 
         view_status_action = QAction('View statusbar', self, checkable=True)
-        view_status_action.setChecked(utils.str2bool(config.get_setting('General', 'view_statusbar')))
+        view_status_action.setChecked(utils.str2bool(config.get_setting('view', 'view_statusbar')))
         view_status_action.triggered.connect(self.view_status)
         view_projectview_action = QAction('View project view', self, checkable=True)
-        view_projectview_action.setChecked(utils.str2bool(config.get_setting('General', 'view_projectview', 'True')))
+        view_projectview_action.setChecked(utils.str2bool(config.get_setting('view', 'view_projectview', 'True')))
         view_projectview_action.triggered.connect(self.view_projectview)
 
         github_link_action = QAction('Github', self)
