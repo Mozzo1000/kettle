@@ -43,15 +43,15 @@ class Kettle(QMainWindow):
 
     def open_file(self):
         name = QFileDialog.getOpenFileName(self, 'Open File')
-        self.filename = name
+        self.filename = name[0]
         file_image_type = imghdr.what(name[0])
         if file_image_type is not None:
-            self.open_image(self.filename[0])
+            self.open_image(self.filename)
         else:
             file = open(name[0], 'r', encoding='utf-8', errors='ignore')
 
             with file:
-                self.new_document(title=os.path.basename(self.filename[0]))
+                self.new_document(title=os.path.basename(self.filename))
                 self.current_editor.setText(file.read())
 
     def open_image(self, filename):
@@ -62,7 +62,7 @@ class Kettle(QMainWindow):
         self.tab_widget.setCurrentWidget(label)
 
     def run(self):
-        subprocess.Popen('python ' + self.filename[0])
+        subprocess.Popen('python ' + self.filename)
 
     def view_status(self, state):
         if state:
@@ -92,6 +92,7 @@ class Kettle(QMainWindow):
                     parent_itm.setHidden(True)
 
     def tree_clicked(self):
+        self.filename = self.treeView.selectedItems()[0].text(1)
         if os.path.isdir(self.treeView.selectedItems()[0].text(1)):
             print("This is not a file, is a directory.")
         else:
