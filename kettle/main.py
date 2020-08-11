@@ -6,9 +6,10 @@ import utils
 import imghdr
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit, \
     QFileDialog, QLabel, QWidget, QHBoxLayout, QTreeWidget, QSizePolicy, QSplitter, \
-    QLayout, QTreeWidgetItem, QMessageBox, QTabWidget
+    QLayout, QTreeWidgetItem, QMessageBox, QTabWidget, QPushButton, QVBoxLayout
 from PyQt5.QtGui import QIcon, QFont, QDesktopServices, QFontDatabase, QPixmap
-from PyQt5.QtCore import QFile, QTextStream, QUrl
+from PyQt5.QtCore import QFile, QTextStream, QUrl, Qt
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from syntax import SyntaxHighlighter
 from ui.settings import Settings
 from ui.about import About
@@ -91,6 +92,19 @@ class Kettle(QMainWindow):
                 if element.startswith('.'):
                     parent_itm.setHidden(True)
 
+    def clear_layout(self, layout):
+        if layout is not None:
+            while layout.count():
+                item = layout.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+                else:
+                    self.clear_layout(item.layout())
+
+    def close_web_view(self):
+        self.clear_layout(self.web_layout)
+
     def tree_clicked(self):
         self.filename = self.treeView.selectedItems()[0].text(1)
         if os.path.isdir(self.treeView.selectedItems()[0].text(1)):
@@ -110,6 +124,15 @@ class Kettle(QMainWindow):
             except FileNotFoundError as error:
                 print("No such file found : " + str(error))
                 QMessageBox.question(self, 'Error', 'Error occured : ' + str(error), QMessageBox.Close)
+        if self.filename.endswith('.html'):
+            self.web = QWebEngineView()
+            self.web.load(QUrl.fromLocalFile(self.filename))
+            self.web_close_button = QPushButton("Close", self.central_widget)
+            self.web_close_button.clicked.connect(self.close_web_view)
+            self.web_layout = QVBoxLayout(self.central_widget)
+            self.web_layout.addWidget(self.web_close_button)
+            self.web_layout.addWidget(self.web)
+            self.horizontal_layout.addLayout(self.web_layout)
 
     def open_prof(self):
         self.proj_folder = str(
