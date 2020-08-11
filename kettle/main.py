@@ -75,6 +75,14 @@ class Kettle(QMainWindow):
             self.statusbar.hide()
             config.update_config('General', 'view_statusbar', 'False')
 
+    def view_projectview(self, state):
+        if state:
+            self.dock_widget.show()
+            config.update_config('General', 'view_projectview', 'True')
+        else:
+            self.dock_widget.hide()
+            config.update_config('General', 'view_projectview', 'False')
+
     def status_line_position(self):
         line = self.current_editor.textCursor().blockNumber()
         column = self.current_editor.textCursor().columnNumber()
@@ -207,8 +215,11 @@ class Kettle(QMainWindow):
 
         self.horizontal_layout.addWidget(self.splitter)
         self.setCentralWidget(self.central_widget)
-
         self.addDockWidget(Qt.LeftDockWidgetArea, self.dock_widget)
+        if utils.str2bool(config.get_setting('General', 'view_projectview', 'True')):
+            self.dock_widget.show()
+        else:
+            self.dock_widget.hide()
 
         label = QLabel("wafawfwa")
         label2 = QLabel("testest")
@@ -280,6 +291,9 @@ class Kettle(QMainWindow):
         view_status_action = QAction('View statusbar', self, checkable=True)
         view_status_action.setChecked(utils.str2bool(config.get_setting('General', 'view_statusbar')))
         view_status_action.triggered.connect(self.view_status)
+        view_projectview_action = QAction('View project view', self, checkable=True)
+        view_projectview_action.setChecked(utils.str2bool(config.get_setting('General', 'view_projectview', 'True')))
+        view_projectview_action.triggered.connect(self.view_projectview)
 
         github_link_action = QAction('Github', self)
         github_link_action.triggered.connect(self.open_github_link)
@@ -313,6 +327,8 @@ class Kettle(QMainWindow):
         run_menu.addAction(run_action)
 
         view_menu.addAction(view_status_action)
+        view_menu.addAction(view_projectview_action)
+
 
         help_menu.addAction(github_link_action)
         help_menu.addAction(about_action)
