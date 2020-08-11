@@ -6,7 +6,8 @@ import utils
 import imghdr
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit, \
     QFileDialog, QLabel, QWidget, QHBoxLayout, QTreeWidget, QSizePolicy, QSplitter, \
-    QLayout, QTreeWidgetItem, QMessageBox, QTabWidget, QPushButton, QVBoxLayout
+    QLayout, QTreeWidgetItem, QMessageBox, QTabWidget, QPushButton, QVBoxLayout, \
+    QDockWidget
 from PyQt5.QtGui import QIcon, QFont, QDesktopServices, QFontDatabase, QPixmap
 from PyQt5.QtCore import QFile, QTextStream, QUrl, Qt
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -208,17 +209,22 @@ class Kettle(QMainWindow):
         self.tab_widget.tabCloseRequested.connect(self.remove_editor)
         self.new_document()
 
+        self.dock_widget = QDockWidget(self.central_widget)
+
         print(self.sizeHint())
         self.horizontal_layout = QHBoxLayout(self.central_widget)
         self.horizontal_layout.setSizeConstraint(QLayout.SetMaximumSize)
         self.treeView = QTreeWidget(self.central_widget)
         self.treeView.setHeaderLabel('Project View')
         self.treeView.itemDoubleClicked.connect(self.tree_clicked)
-        self.splitter.addWidget(self.treeView)
+        self.dock_widget.setWidget(self.treeView)
         self.splitter.addWidget(self.tab_widget)
 
         self.horizontal_layout.addWidget(self.splitter)
         self.setCentralWidget(self.central_widget)
+
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.dock_widget)
+
         label = QLabel("wafawfwa")
         label2 = QLabel("testest")
         self.statusbar.addPermanentWidget(label)
