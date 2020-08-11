@@ -3,10 +3,11 @@ import os
 import subprocess
 import style_rc
 import utils
+import imghdr
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit, \
     QFileDialog, QLabel, QWidget, QHBoxLayout, QTreeWidget, QSizePolicy, QSplitter, \
     QLayout, QTreeWidgetItem, QMessageBox, QTabWidget
-from PyQt5.QtGui import QIcon, QFont, QDesktopServices, QFontDatabase
+from PyQt5.QtGui import QIcon, QFont, QDesktopServices, QFontDatabase, QPixmap
 from PyQt5.QtCore import QFile, QTextStream, QUrl
 from syntax import SyntaxHighlighter
 from ui.settings import Settings
@@ -43,12 +44,22 @@ class Kettle(QMainWindow):
     def open_file(self):
         name = QFileDialog.getOpenFileName(self, 'Open File')
         self.filename = name
+        file_image_type = imghdr.what(name[0])
+        if file_image_type is not None:
+            self.open_image(self.filename[0])
+        else:
+            file = open(name[0], 'r', encoding='utf-8', errors='ignore')
 
-        file = open(name[0], 'r', encoding='utf-8', errors='ignore')
+            with file:
+                self.new_document(title=os.path.basename(self.filename[0]))
+                self.current_editor.setText(file.read())
 
-        with file:
-            self.new_document(title=os.path.basename(self.filename[0]))
-            self.current_editor.setText(file.read())
+    def open_image(self, filename):
+        label = QLabel(self)
+        pixmap = QPixmap(filename)
+        label.setPixmap(pixmap)
+        self.tab_widget.addTab(label, filename)
+        self.tab_widget.setCurrentWidget(label)
 
     def run(self):
         subprocess.Popen('python ' + self.filename[0])
@@ -80,22 +91,24 @@ class Kettle(QMainWindow):
                 if element.startswith('.'):
                     parent_itm.setHidden(True)
 
-
     def tree_clicked(self):
-        print(self.treeView.selectedItems()[0].text(0))
-        print(self.proj_folder)
-        try:
-            file = open(self.treeView.selectedItems()[0].text(1), 'r', encoding='utf-8', errors='ignore')
+        if os.path.isdir(self.treeView.selectedItems()[0].text(1)):
+            print("This is not a file, is a directory.")
+        else:
+            try:
+                file_image_type = imghdr.what(self.treeView.selectedItems()[0].text(1))
+                if file_image_type is not None:
+                    self.open_image(self.treeView.selectedItems()[0].text(1))
+                else:
+                    file = open(self.treeView.selectedItems()[0].text(1), 'r', encoding='utf-8', errors='ignore')
 
-            with file:
-                text = file.read()
-                self.new_document(title=os.path.basename(self.treeView.selectedItems()[0].text(1)))
-                self.current_editor.setText(text)
-        except IsADirectoryError as error:
-            print("This is not a file, is a directory : " + str(error))
-        except FileNotFoundError as error:
-            print("No such file found : " + str(error))
-            QMessageBox.question(self, 'Error', 'Error occured : ' + str(error), QMessageBox.Close)
+                    with file:
+                        text = file.read()
+                        self.new_document(title=os.path.basename(self.treeView.selectedItems()[0].text(1)))
+                        self.current_editor.setText(text)
+            except FileNotFoundError as error:
+                print("No such file found : " + str(error))
+                QMessageBox.question(self, 'Error', 'Error occured : ' + str(error), QMessageBox.Close)
 
     def open_prof(self):
         self.proj_folder = str(
