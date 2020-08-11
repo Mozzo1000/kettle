@@ -114,7 +114,9 @@ class Kettle(QMainWindow):
         self.proj_folder = str(
             QFileDialog.getExistingDirectory(
                 self, 'Select Directory'))
+        self.treeView.clear()
         self.load_project_structure(self.proj_folder, self.treeView)
+        config.update_config('General', 'last_opened_project', self.proj_folder)
 
     def open_settings(self):
         settings = Settings(self)
@@ -199,9 +201,11 @@ class Kettle(QMainWindow):
         self.statusbar.addWidget(label2)
         self.splitter.setSizes([5, 300])
 
-
         if not utils.str2bool(config.get_setting('General', 'view_statusbar')):
             self.statusbar.hide()
+
+        if config.get_setting('General', 'last_opened_project'):
+            self.load_project_structure(config.get_setting('General', 'last_opened_project'), self.treeView)
 
         exit_action = QAction(QIcon('exit.png'), '&Exit', self)
         exit_action.setShortcut('Ctrl+Q')
