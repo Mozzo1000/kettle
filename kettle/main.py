@@ -64,7 +64,8 @@ class Kettle(QMainWindow):
         self.tab_widget.setCurrentWidget(label)
 
     def run(self):
-        subprocess.Popen('python ' + self.filename)
+        run = subprocess.run([sys.executable, self.filename], stdout=subprocess.PIPE)
+        print(run.stdout)
 
     def view_status(self, state):
         if state:
