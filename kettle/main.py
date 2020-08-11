@@ -106,7 +106,7 @@ class Kettle(QMainWindow):
                     with file:
                         text = file.read()
                         self.new_document(title=os.path.basename(self.treeView.selectedItems()[0].text(1)))
-                        self.current_editor.setText(text)
+                        self.current_editor.setPlainText(text)
             except FileNotFoundError as error:
                 print("No such file found : " + str(error))
                 QMessageBox.question(self, 'Error', 'Error occured : ' + str(error), QMessageBox.Close)
