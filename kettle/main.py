@@ -93,19 +93,6 @@ class Kettle(QMainWindow):
                 if element.startswith('.'):
                     parent_itm.setHidden(True)
 
-    def clear_layout(self, layout):
-        if layout is not None:
-            while layout.count():
-                item = layout.takeAt(0)
-                widget = item.widget()
-                if widget is not None:
-                    widget.deleteLater()
-                else:
-                    self.clear_layout(item.layout())
-
-    def close_web_view(self):
-        self.clear_layout(self.web_layout)
-
     def tree_clicked(self):
         self.filename = self.treeView.selectedItems()[0].text(1)
         if os.path.isdir(self.treeView.selectedItems()[0].text(1)):
@@ -128,12 +115,9 @@ class Kettle(QMainWindow):
         if self.filename.endswith('.html'):
             self.web = QWebEngineView()
             self.web.load(QUrl.fromLocalFile(self.filename))
-            self.web_close_button = QPushButton("Close", self.central_widget)
-            self.web_close_button.clicked.connect(self.close_web_view)
-            self.web_layout = QVBoxLayout(self.central_widget)
-            self.web_layout.addWidget(self.web_close_button)
-            self.web_layout.addWidget(self.web)
-            self.horizontal_layout.addLayout(self.web_layout)
+            self.web_dock_widget = QDockWidget(self.central_widget)
+            self.web_dock_widget.setWidget(self.web)
+            self.addDockWidget(Qt.RightDockWidgetArea, self.web_dock_widget)
 
     def open_prof(self):
         self.proj_folder = str(
