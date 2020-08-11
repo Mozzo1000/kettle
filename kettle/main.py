@@ -221,10 +221,7 @@ class Kettle(QMainWindow):
         else:
             self.dock_widget.hide()
 
-        label = QLabel("wafawfwa")
-        label2 = QLabel("testest")
-        self.statusbar.addPermanentWidget(label)
-        self.statusbar.addWidget(label2)
+        self.statusbar.showMessage('Line 0 | Column 0')
         self.splitter.setSizes([5, 300])
 
         if not utils.str2bool(config.get_setting('view', 'view_statusbar')):
