@@ -22,9 +22,12 @@ class Theme:
     def set(self, name):
         self.active_theme = name
         self.config.update_config('General', 'theme', name)
-        style = QFile(self.get_active()['location'])
-        style.open(QFile.ReadOnly | QFile.Text)
-        self.app.setStyleSheet(QTextStream(style).readAll())
+        apply_style = ""
+        if not name:
+            style = QFile(self.get_active()['location'])
+            style.open(QFile.ReadOnly | QFile.Text)
+            apply_style = QTextStream(style).readAll()
+        self.app.setStyleSheet(apply_style)
 
     def get_active(self):
         return self.themes[self.active_theme]
