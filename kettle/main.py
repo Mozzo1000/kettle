@@ -155,7 +155,7 @@ class Kettle(QMainWindow):
         about.show()
 
     def create_editor(self):
-        text_editor = CodeEditor(config)
+        text_editor = CodeEditor(config, themes)
         return text_editor
 
     def remove_editor(self, index):
@@ -335,8 +335,8 @@ class Kettle(QMainWindow):
 if __name__ == '__main__':
     app.setWindowIcon(QIcon('../assets/icon.png'))
 
-    themes.add('dark', os.path.join(basedir, '../assets/style/style.qss'))
-    themes.add('white', os.path.join(basedir, ''))
+    themes.add('dark', os.path.join(basedir, '../assets/style/style.qss'), '#848383')
+    themes.add('white', os.path.join(basedir, ''), '#e8e8e8')
     themes.set(config.get_setting('General', 'theme'))
 
     print(os.path.dirname(os.path.abspath(__file__)))

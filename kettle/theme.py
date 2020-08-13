@@ -11,10 +11,10 @@ class Theme:
         self.themes = {}
         self.active_theme = ''
 
-    def add(self, theme_name, theme_location):
+    def add(self, theme_name, theme_location, highlight_color):
         self.theme_name = theme_name
         self.theme_location = theme_location
-        self.themes[theme_name] = {'location': theme_location}
+        self.themes[theme_name] = {'location': theme_location, 'highlight_color': highlight_color}
 
     def get_all(self):
         return self.themes.keys()

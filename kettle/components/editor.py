@@ -4,9 +4,10 @@ from syntax import SyntaxHighlighter
 
 
 class CodeEditor(QPlainTextEdit):
-    def __init__(self, config):
+    def __init__(self, config, theme):
         super().__init__()
         self.config = config
+        self.theme = theme
         font = QFont()
         font.setFamily(config.get_setting('General', 'font'))
         font.setPointSize(22)
@@ -16,7 +17,7 @@ class CodeEditor(QPlainTextEdit):
 
 
         self.current_line_number = None
-        self.current_line_color = QColor("#e8e8e8")
+        self.current_line_color = QColor(theme.get_active()['highlight_color'])
         self.cursorPositionChanged.connect(self.highlight_current_line)
 
     def highlight_current_line(self):
