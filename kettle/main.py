@@ -124,7 +124,7 @@ class Kettle(QMainWindow):
         if self.filename.endswith('.html'):
             self.web = QWebEngineView()
             self.web.load(QUrl.fromLocalFile(self.filename))
-            self.web_dock_widget = QDockWidget(self.central_widget)
+            self.web_dock_widget = QDockWidget('HTML Preview', self.central_widget)
             self.web_dock_widget.setWidget(self.web)
             self.addDockWidget(Qt.RightDockWidgetArea, self.web_dock_widget)
 
@@ -202,7 +202,7 @@ class Kettle(QMainWindow):
         self.tab_widget.tabCloseRequested.connect(self.remove_editor)
         self.new_document()
 
-        self.dock_widget = QDockWidget(self.central_widget)
+        self.dock_widget = QDockWidget('Project View', self.central_widget)
 
         print(self.sizeHint())
         self.horizontal_layout = QHBoxLayout(self.central_widget)
