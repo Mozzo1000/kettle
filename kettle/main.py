@@ -30,11 +30,11 @@ class Kettle(QMainWindow):
         name = self.filename[0]
         if not self.filename or self.filename == "untitled":
             name = QFileDialog.getSaveFileName(self, 'Save File')[0]
-
-        file = open(name, 'wt')
-        save_text = self.current_editor.toPlainText()
-        file.write(save_text)
-        file.close()
+        print(self.current_editor.toPlainText())
+        #file = open(name, 'wt')
+        #save_text = self.current_editor.toPlainText()
+        #file.write(save_text)
+        #file.close()
 
     def save_file_as(self):
         name = QFileDialog.getSaveFileName(self, 'Save File')[0]
