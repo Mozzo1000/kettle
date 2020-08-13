@@ -31,6 +31,7 @@ class Settings(QMainWindow):
             QMessageBox.question(self, 'Info', 'Please restart the application for changes to take affect.', QMessageBox.Close)
 
     def change_theme(self):
+        self.themes.set(self.theme_selector.currentText())
         config.update_config('General', 'theme', self.theme_selector.currentText())
         print('Theme selected: ' + self.theme_selector.currentText())
 

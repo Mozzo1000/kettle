@@ -18,8 +18,9 @@ from config import Config
 from utils import basedir
 from theme import Theme
 
+app = QApplication(sys.argv)
 config = Config(os.path.expanduser('~/.kettle/'), 'config.ini')
-themes = Theme(config)
+themes = Theme(app, config)
 
 
 class Kettle(QMainWindow):
@@ -337,16 +338,12 @@ class Kettle(QMainWindow):
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
     app.setWindowIcon(QIcon('../assets/icon.png'))
 
     themes.add('dark', os.path.join(basedir, '../assets/style/style.qss'))
     themes.add('white', os.path.join(basedir, ''))
     themes.set(config.get_setting('General', 'theme'))
 
-    style = QFile(themes.get_active()['location'])
-    style.open(QFile.ReadOnly | QFile.Text)
-    app.setStyleSheet(QTextStream(style).readAll())
     print(os.path.dirname(os.path.abspath(__file__)))
 
     kettle = Kettle()

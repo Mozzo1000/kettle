@@ -1,6 +1,9 @@
+from PyQt5.QtCore import QFile, QTextStream
+
 
 class Theme:
-    def __init__(self, config):
+    def __init__(self, app, config):
+        self.app = app
         self.config = config
         self.theme_name = ''
         self.theme_location = ''
@@ -19,6 +22,9 @@ class Theme:
     def set(self, name):
         self.active_theme = name
         self.config.update_config('General', 'theme', name)
+        style = QFile(self.get_active()['location'])
+        style.open(QFile.ReadOnly | QFile.Text)
+        self.app.setStyleSheet(QTextStream(style).readAll())
 
     def get_active(self):
         return self.themes[self.active_theme]
