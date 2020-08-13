@@ -5,6 +5,7 @@ class MarkdownPreview(QDockWidget):
     def __init__(self, text):
         super().__init__()
         self.text = text
+        self.setWindowTitle('Markdown Preview')
 
         self.markdown = QTextEdit(self)
         self.markdown.setMarkdown(text.toPlainText())
