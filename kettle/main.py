@@ -17,6 +17,7 @@ from config import Config
 from utils import basedir
 from theme import Theme
 from components.editor import CodeEditor
+from components.HTMLPreview import HTMLPreview
 
 app = QApplication(sys.argv)
 config = Config(os.path.expanduser('~/.kettle/'), 'config.ini')
@@ -124,11 +125,8 @@ class Kettle(QMainWindow):
                 print("No such file found : " + str(error))
                 QMessageBox.question(self, 'Error', 'Error occured : ' + str(error), QMessageBox.Close)
         if self.filename.endswith('.html'):
-            self.web = QWebEngineView()
-            self.web.load(QUrl.fromLocalFile(self.filename))
-            self.web_dock_widget = QDockWidget('HTML Preview', self.central_widget)
-            self.web_dock_widget.setWidget(self.web)
-            self.addDockWidget(Qt.RightDockWidgetArea, self.web_dock_widget)
+            html_preview = HTMLPreview(self.filename)
+            self.addDockWidget(Qt.RightDockWidgetArea, html_preview)
 
     def open_prof(self):
         proj_folder = str(
