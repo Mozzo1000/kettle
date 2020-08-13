@@ -11,12 +11,12 @@ from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit,
 from PyQt5.QtGui import QIcon, QFont, QDesktopServices, QFontDatabase, QPixmap
 from PyQt5.QtCore import QFile, QTextStream, QUrl, Qt
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from syntax import SyntaxHighlighter
 from ui.settings import Settings
 from ui.about import About
 from config import Config
 from utils import basedir
 from theme import Theme
+from components.editor import CodeEditor
 
 app = QApplication(sys.argv)
 config = Config(os.path.expanduser('~/.kettle/'), 'config.ini')
@@ -155,14 +155,7 @@ class Kettle(QMainWindow):
         about.show()
 
     def create_editor(self):
-        text_editor = QTextEdit()
-        font = QFont()
-        print(config.get_setting('General', 'font'))
-        font.setFamily(config.get_setting('General', 'font'))
-        font.setPointSize(11)
-        text_editor.setFont(font)
-        text_editor.setTabStopWidth(30)
-        self.highlighter = SyntaxHighlighter(text_editor.document())
+        text_editor = CodeEditor(config)
         return text_editor
 
     def remove_editor(self, index):
