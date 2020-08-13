@@ -132,12 +132,14 @@ class Kettle(QMainWindow):
             self.addDockWidget(Qt.RightDockWidgetArea, self.web_dock_widget)
 
     def open_prof(self):
-        self.proj_folder = str(
+        proj_folder = str(
             QFileDialog.getExistingDirectory(
                 self, 'Select Directory'))
         self.treeView.clear()
-        self.load_project_structure(self.proj_folder, self.treeView)
-        config.update_config('General', 'last_opened_project', self.proj_folder)
+        self.load_project_structure(proj_folder, self.treeView)
+        self.treeView.setHeaderHidden(False)
+        self.treeView.setHeaderLabel(os.path.basename(os.path.normpath(proj_folder)))
+        config.update_config('General', 'last_opened_project', proj_folder)
 
     def open_settings(self):
         settings = Settings(self, themes)
