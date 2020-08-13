@@ -15,6 +15,7 @@ class Config:
 
             self.config.add_section('General')
             self.config.add_section('view')
+            self.config.add_section('editor')
 
             self.config.set('General', 'font', 'Monoid')
             self.config.set('General', 'use_dark_theme', 'True')
@@ -24,6 +25,8 @@ class Config:
 
             self.config.set('view', 'view_statusbar', 'True')
             self.config.set('view', 'view_projectview', 'True')
+
+            self.config.set('editor', 'highlight_line', 'True')
 
             with open(config_path + config_name, 'w') as config_file:
                 self.config.write(config_file)

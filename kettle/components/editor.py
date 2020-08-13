@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QPlainTextEdit, QTextEdit
 from PyQt5.QtGui import QFont, QTextFormat, QColor
 from syntax import SyntaxHighlighter
+from utils import str2bool
 
 
 class CodeEditor(QPlainTextEdit):
@@ -15,10 +16,10 @@ class CodeEditor(QPlainTextEdit):
         self.setTabStopWidth(30)
         self.highlighter = SyntaxHighlighter(self.document())
 
-
-        self.current_line_number = None
-        self.current_line_color = QColor(theme.get_active()['highlight_color'])
-        self.cursorPositionChanged.connect(self.highlight_current_line)
+        if str2bool(config.get_setting('editor', 'highlight_line', "True")):
+            self.current_line_number = None
+            self.current_line_color = QColor(theme.get_active()['highlight_color'])
+            self.cursorPositionChanged.connect(self.highlight_current_line)
 
     def highlight_current_line(self):
         new_current_line_number = self.textCursor().blockNumber()
