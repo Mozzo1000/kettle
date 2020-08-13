@@ -98,9 +98,9 @@ class Kettle(QMainWindow):
             parent_itm = QTreeWidgetItem(tree, [os.path.basename(element), os.path.join(startpath, element)])
             if os.path.isdir(path_info):
                 self.load_project_structure(path_info, parent_itm)
-                parent_itm.setIcon(0, utils.select_asset_based_on_theme('folder_black.png', 'folder.png', config))
+                parent_itm.setIcon(0, QIcon(themes.get_icon('folder.png')))
             else:
-                parent_itm.setIcon(0, utils.select_asset_based_on_theme('file_black.png', 'file.png', config))
+                parent_itm.setIcon(0, QIcon(themes.get_icon('file.png')))
             if not utils.str2bool(config.get_setting('General', 'show_hidden_items', 'False')):
                 if element.startswith('.'):
                     parent_itm.setHidden(True)
@@ -335,8 +335,10 @@ class Kettle(QMainWindow):
 if __name__ == '__main__':
     app.setWindowIcon(QIcon('../assets/icon.png'))
 
-    themes.add('dark', os.path.join(basedir, '../assets/style/style.qss'), '#848383')
-    themes.add('white', os.path.join(basedir, ''), '#e8e8e8')
+    themes.add('dark', os.path.join(basedir, '../assets/style/style.qss'), '#848383',
+               os.path.join(basedir, '../assets/themes/dark/icons/'))
+    themes.add('white', os.path.join(basedir, ''), '#e8e8e8',
+               os.path.join(basedir, '../assets/themes/white/icons/'))
     themes.set(config.get_setting('General', 'theme'))
 
     print(os.path.dirname(os.path.abspath(__file__)))
