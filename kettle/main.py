@@ -16,8 +16,10 @@ from ui.settings import Settings
 from ui.about import About
 from config import Config
 from utils import basedir
+from theme import Theme
 
 config = Config(os.path.expanduser('~/.kettle/'), 'config.ini')
+themes = Theme(config)
 
 
 class Kettle(QMainWindow):
@@ -137,7 +139,7 @@ class Kettle(QMainWindow):
         config.update_config('General', 'last_opened_project', self.proj_folder)
 
     def open_settings(self):
-        settings = Settings(self)
+        settings = Settings(self, themes)
         settings.show()
 
     def open_github_link(self):
@@ -337,10 +339,14 @@ class Kettle(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon('../assets/icon.png'))
-    if utils.str2bool(config.get_setting('General', 'use_dark_theme', 'True')):
-        style = QFile(os.path.join(basedir, '../assets/style/style.qss'))
-        style.open(QFile.ReadOnly | QFile.Text)
-        app.setStyleSheet(QTextStream(style).readAll())
+
+    themes.add('dark', os.path.join(basedir, '../assets/style/style.qss'))
+    themes.add('white', os.path.join(basedir, ''))
+    themes.set(config.get_setting('General', 'theme'))
+
+    style = QFile(themes.get_active()['location'])
+    style.open(QFile.ReadOnly | QFile.Text)
+    app.setStyleSheet(QTextStream(style).readAll())
     print(os.path.dirname(os.path.abspath(__file__)))
 
     kettle = Kettle()

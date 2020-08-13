@@ -20,6 +20,7 @@ class Config:
             self.config.set('General', 'use_dark_theme', 'True')
             self.config.set('General', 'show_hidden_items', 'False')
             self.config.set('General', 'last_opened_project', '')
+            self.config.set('General', 'theme', 'dark')
 
             self.config.set('view', 'view_statusbar', 'True')
             self.config.set('view', 'view_projectview', 'True')
