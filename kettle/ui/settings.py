@@ -14,9 +14,9 @@ class Settings(QMainWindow):
     def save_settings(self):
 
         if self.show_statusbar.isChecked():
-            config.update_config('General', 'view_statusbar', 'True')
+            config.update_config('view', 'view_statusbar', 'True')
         else:
-            config.update_config('General', 'view_statusbar', 'False')
+            config.update_config('view', 'view_statusbar', 'False')
         self.close()
 
         QMessageBox.question(self, 'Info', 'Please restart the application for changes to take affect.',
@@ -33,7 +33,7 @@ class Settings(QMainWindow):
         self.resize(200, 200)
         self.show_statusbar = QCheckBox("Show statusbar", self)
 
-        if str2bool(config.get_setting('General', 'view_statusbar')):
+        if str2bool(config.get_setting('view', 'view_statusbar')):
             self.show_statusbar.setChecked(True)
         save_btn = QPushButton("Save", self)
         save_btn.move(0, 100)
