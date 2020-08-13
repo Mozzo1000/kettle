@@ -208,7 +208,7 @@ class Kettle(QMainWindow):
         self.horizontal_layout = QHBoxLayout(self.central_widget)
         self.horizontal_layout.setSizeConstraint(QLayout.SetMaximumSize)
         self.treeView = QTreeWidget(self.central_widget)
-        self.treeView.setHeaderLabel('Project View')
+        self.treeView.header().hide()
         self.treeView.itemDoubleClicked.connect(self.tree_clicked)
         self.dock_widget.setWidget(self.treeView)
         self.splitter.addWidget(self.tab_widget)
