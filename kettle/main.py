@@ -18,6 +18,7 @@ from utils import basedir
 from theme import Theme
 from components.editor import CodeEditor
 from components.HTMLPreview import HTMLPreview
+from components.markdown_preview import MarkdownPreview
 
 app = QApplication(sys.argv)
 config = Config(os.path.expanduser('~/.kettle/'), 'config.ini')
@@ -127,6 +128,9 @@ class Kettle(QMainWindow):
         if self.filename.endswith('.html'):
             html_preview = HTMLPreview(self.filename)
             self.addDockWidget(Qt.RightDockWidgetArea, html_preview)
+        elif self.filename.endswith('.md'):
+            markdown_preview = MarkdownPreview(self.current_editor)
+            self.addDockWidget(Qt.RightDockWidgetArea, markdown_preview)
 
     def open_prof(self):
         proj_folder = str(
