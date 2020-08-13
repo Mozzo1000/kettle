@@ -15,8 +15,8 @@ from syntax import SyntaxHighlighter
 from ui.settings import Settings
 from ui.about import About
 from config import Config
+from utils import basedir
 
-basedir = os.path.abspath(os.path.dirname(__file__))
 config = Config(os.path.expanduser('~/.kettle/'), 'config.ini')
 
 
@@ -95,9 +95,9 @@ class Kettle(QMainWindow):
             parent_itm = QTreeWidgetItem(tree, [os.path.basename(element), os.path.join(startpath, element)])
             if os.path.isdir(path_info):
                 self.load_project_structure(path_info, parent_itm)
-                parent_itm.setIcon(0, QIcon(os.path.join(basedir, '../assets/folder.png')))
+                parent_itm.setIcon(0, utils.select_asset_based_on_theme('folder_black.png', 'folder.png', config))
             else:
-                parent_itm.setIcon(0, QIcon(os.path.join(basedir, '../assets/file.png')))
+                parent_itm.setIcon(0, utils.select_asset_based_on_theme('file_black.png', 'file.png', config))
             if not utils.str2bool(config.get_setting('General', 'show_hidden_items', 'False')):
                 if element.startswith('.'):
                     parent_itm.setHidden(True)
