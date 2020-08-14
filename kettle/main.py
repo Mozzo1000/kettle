@@ -129,7 +129,7 @@ class Kettle(QMainWindow):
             html_preview = HTMLPreview(self.filename, self.current_editor)
             self.addDockWidget(Qt.RightDockWidgetArea, html_preview)
         elif self.filename.endswith('.md'):
-            markdown_preview = MarkdownPreview(self.current_editor)
+            markdown_preview = MarkdownPreview(self.filename, self.current_editor)
             self.addDockWidget(Qt.RightDockWidgetArea, markdown_preview)
 
     def open_prof(self):
