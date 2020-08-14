@@ -4,11 +4,18 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 
 class HTMLPreview(QDockWidget):
-    def __init__(self, url):
+    def __init__(self, url, text):
         super().__init__()
         self.setWindowTitle('HTML Preview')
+        self.url = url
+        self.text = text
 
-        web = QWebEngineView()
-        web.load(QUrl.fromLocalFile(url))
+        text.textChanged.connect(self.on_update)
 
-        self.setWidget(web)
+        self.web = QWebEngineView()
+        self.web.setHtml(text.toPlainText(), baseUrl=QUrl.fromLocalFile(url))
+
+        self.setWidget(self.web)
+
+    def on_update(self):
+        self.web.setHtml(self.text.toPlainText(), baseUrl=QUrl.fromLocalFile(self.url))

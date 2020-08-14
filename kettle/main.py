@@ -126,7 +126,7 @@ class Kettle(QMainWindow):
                 print("No such file found : " + str(error))
                 QMessageBox.question(self, 'Error', 'Error occured : ' + str(error), QMessageBox.Close)
         if self.filename.endswith('.html'):
-            html_preview = HTMLPreview(self.filename)
+            html_preview = HTMLPreview(self.filename, self.current_editor)
             self.addDockWidget(Qt.RightDockWidgetArea, html_preview)
         elif self.filename.endswith('.md'):
             markdown_preview = MarkdownPreview(self.current_editor)
