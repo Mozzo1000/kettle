@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QDockWidget, QTextEdit
+from PyQt5.QtWidgets import QDockWidget
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+import markdown2
 
 
 class MarkdownPreview(QDockWidget):
@@ -7,11 +9,11 @@ class MarkdownPreview(QDockWidget):
         self.text = text
         self.setWindowTitle('Markdown Preview')
 
-        self.markdown = QTextEdit(self)
-        self.markdown.setMarkdown(text.toPlainText())
         text.textChanged.connect(self.on_update)
 
-        self.setWidget(self.markdown)
+        self.web = QWebEngineView()
+        self.web.setHtml(markdown2.markdown(self.text.toPlainText(), extras=['tables']))
+        self.setWidget(self.web)
 
     def on_update(self):
-        self.markdown.setMarkdown(self.text.toPlainText())
+        self.web.page().setHtml(markdown2.markdown(self.text.toPlainText(), extras=['tables']))
