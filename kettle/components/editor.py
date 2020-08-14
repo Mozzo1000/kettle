@@ -19,6 +19,7 @@ class CodeEditor(QPlainTextEdit):
         if str2bool(config.get_setting('editor', 'highlight_line', "True")):
             self.current_line_number = None
             self.current_line_color = QColor(theme.get_active()['highlight_color'])
+            self.current_line_color.setAlpha(50)
             self.cursorPositionChanged.connect(self.highlight_current_line)
 
     def highlight_current_line(self):
