@@ -14,8 +14,12 @@ class HTMLPreview(QDockWidget):
 
         self.web = QWebEngineView()
         self.web.setHtml(text.toPlainText(), baseUrl=QUrl.fromLocalFile(url))
+        self.web.loadFinished.connect(self.on_load_finished)
 
         self.setWidget(self.web)
+
+    def on_load_finished(self):
+        self.setWindowTitle(f'HTML Preview - {self.web.title()}')
 
     def on_update(self):
         self.web.setHtml(self.text.toPlainText(), baseUrl=QUrl.fromLocalFile(self.url))
