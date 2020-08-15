@@ -18,7 +18,6 @@ class Config:
             self.config.add_section('editor')
 
             self.config.set('General', 'font', 'Monoid')
-            self.config.set('General', 'use_dark_theme', 'True')
             self.config.set('General', 'show_hidden_items', 'False')
             self.config.set('General', 'last_opened_project', '')
             self.config.set('General', 'theme', 'dark')
