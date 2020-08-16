@@ -7,7 +7,7 @@ import imghdr
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QTextEdit, \
     QFileDialog, QLabel, QWidget, QHBoxLayout, QTreeWidget, QSizePolicy, QSplitter, \
     QLayout, QTreeWidgetItem, QMessageBox, QTabWidget, QPushButton, QVBoxLayout, \
-    QDockWidget
+    QDockWidget, QMenu
 from PyQt5.QtGui import QIcon, QFont, QDesktopServices, QFontDatabase, QPixmap
 from PyQt5.QtCore import QFile, QTextStream, QUrl, Qt
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -19,6 +19,7 @@ from theme import Theme
 from components.editor import CodeEditor
 from components.HTMLPreview import HTMLPreview
 from components.markdown_preview import MarkdownPreview
+from components.note_graph import NotesGraph
 
 app = QApplication(sys.argv)
 config = Config(os.path.expanduser('~/.kettle/'), 'config.ini')
@@ -165,7 +166,6 @@ class Kettle(QMainWindow):
         return text_editor
 
     def on_text_changed(self):
-        print('TEXT CHANGED')
         self.current_editor.set_change_name(self.tab_widget)
 
     def remove_editor(self, index):
@@ -185,6 +185,10 @@ class Kettle(QMainWindow):
         self.editors.append(self.current_editor)
         self.tab_widget.addTab(self.current_editor, str(title) + " - " + str(len(self.editors)))
         self.tab_widget.setCurrentWidget(self.current_editor)
+
+    def open_notes_graph(self):
+        notes_graph = NotesGraph()
+        self.addDockWidget(Qt.BottomDockWidgetArea, notes_graph)
 
     def init_ui(self):
         self.resize(800, 600)
@@ -312,12 +316,19 @@ class Kettle(QMainWindow):
         close_current_editor_action.triggered.connect(self.remove_editor)
         close_current_editor_action.setShortcut('Ctrl+W')
 
+        open_notes_graph_action = QAction('Open notes', self)
+        open_notes_graph_action.triggered.connect(self.open_notes_graph)
+
         menubar = self.menuBar()
+        notes_menu = QMenu('Notes', self)
+
         file_menu = menubar.addMenu('&File')
         edit_menu = menubar.addMenu('&Edit')
         run_menu = menubar.addMenu('&Run')
         view_menu = menubar.addMenu('&View')
         help_menu = menubar.addMenu('&Help')
+
+        notes_menu.addAction(open_notes_graph_action)
 
         file_menu.addAction(new_action)
         file_menu.addAction(open_action)
@@ -327,6 +338,7 @@ class Kettle(QMainWindow):
         file_menu.addAction(close_current_editor_action)
         file_menu.addAction(settings_action)
         file_menu.addAction(exit_action)
+        file_menu.addMenu(notes_menu)
 
         edit_menu.addAction(undo_action)
         edit_menu.addAction(redo_action)
