@@ -48,7 +48,7 @@ class Node(QGraphicsEllipseItem):
                       QGraphicsItem.ItemSendsGeometryChanges)
         self.text = QGraphicsTextItem(name)
         self.text.setDefaultTextColor(self.brush_color)
-        self.text.setPos(0.0 / self.text.textWidth(), -20.0)
+        self.text.setPos(-float(len(self.text.toPlainText())), -20.0)
         self.text.setParentItem(self)
 
     def addEdge(self, edge):
@@ -75,11 +75,13 @@ class Edge(QGraphicsLineItem):
         self.dest = dest
         self.source.addEdge(self)
         self.dest.addEdge(self)
-        self.setPen(QPen(Qt.red, 1.75))
+        self.line_color = QColor(153, 153, 153)
+        self.line_color.setAlpha(40)
+        self.setPen(QPen(self.line_color, 1.75))
         self.adjust()
 
     def defocus(self):
-        self.setPen(QPen(Qt.red, 1.75))
+        self.setPen(QPen(self.line_color, 1.75))
 
     def focus(self):
         self.setPen(QPen(QColor("#1976D2"), 1.75))
