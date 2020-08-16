@@ -23,21 +23,24 @@ class NotesGraph(QDockWidget):
         self.setWidget(self.graphic_view)
 
     def mouseDoubleClickEvent(self, event):
-        node = Node('Document 1')
-        node2 = Node('Document 2')
-        node3 = Node('Document 3')
-        edge = Edge(node, node2)
-        edge2 = Edge(node, node3)
-        self.scene.addItem(edge)
-        self.scene.addItem(edge2)
-        self.scene.addItem(node)
-        self.scene.addItem(node2)
-        self.scene.addItem(node3)
+        self.scene.clear()
+        node_list = []
+        for i in range(10):
+            node = Node("test - " + str(i))
+            self.scene.addItem(node)
+            node_list.append(node)
+        for i2 in range(len(node_list)):
+            rand = random.randrange(0, len(node_list))
+            rand2 = random.randrange(0, len(node_list))
+            edge = Edge(node_list[rand], node_list[rand2])
+            self.scene.addItem(edge)
 
 
 class Node(QGraphicsEllipseItem):
     def __init__(self, name, rect=QRectF(0, 0, 20, 20), parent=None):
         QGraphicsEllipseItem.__init__(self, rect, parent)
+        self.setX(random.randrange(0, 1000, 1))
+        self.setY(random.randrange(0, 300, 1))
         self.edges = []
         self.setZValue(2)
         self.brush_color = QColor(153, 153, 153)
