@@ -39,6 +39,7 @@ class Kettle(QMainWindow):
         save_text = self.current_editor.toPlainText()
         file.write(save_text)
         file.close()
+        self.current_editor.set_change_name(self.tab_widget, False)
 
     def save_file_as(self):
         name = QFileDialog.getSaveFileName(self, 'Save File')[0]
@@ -46,6 +47,7 @@ class Kettle(QMainWindow):
         save_text = self.current_editor.toPlainText()
         file.write(save_text)
         file.close()
+        self.current_editor.set_change_name(self.tab_widget, False)
 
     def open_file(self):
         name = QFileDialog.getOpenFileName(self, 'Open File')
@@ -58,7 +60,8 @@ class Kettle(QMainWindow):
 
             with file:
                 self.new_document(title=os.path.basename(self.filename))
-                self.current_editor.setText(file.read())
+                self.current_editor.setPlainText(file.read())
+                self.current_editor.set_change_name(self.tab_widget, False)
 
     def open_image(self, filename):
         label = QLabel(self)
@@ -122,6 +125,7 @@ class Kettle(QMainWindow):
                         text = file.read()
                         self.new_document(title=os.path.basename(self.treeView.selectedItems()[0].text(1)))
                         self.current_editor.setPlainText(text)
+                        self.current_editor.set_change_name(self.tab_widget, False)
             except FileNotFoundError as error:
                 print("No such file found : " + str(error))
                 QMessageBox.question(self, 'Error', 'Error occured : ' + str(error), QMessageBox.Close)
@@ -157,7 +161,12 @@ class Kettle(QMainWindow):
 
     def create_editor(self):
         text_editor = CodeEditor(config, themes)
+        text_editor.textChanged.connect(self.on_text_changed)
         return text_editor
+
+    def on_text_changed(self):
+        print('TEXT CHANGED')
+        self.current_editor.set_change_name(self.tab_widget)
 
     def remove_editor(self, index):
         if index is False:

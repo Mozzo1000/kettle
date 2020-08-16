@@ -9,6 +9,7 @@ class CodeEditor(QPlainTextEdit):
         super().__init__()
         self.config = config
         self.theme = theme
+        self.has_text_changed = False
         font = QFont()
         font.setFamily(config.get_setting('General', 'font'))
         font.setPointSize(22)
@@ -32,3 +33,12 @@ class CodeEditor(QPlainTextEdit):
             hi_selection.cursor = self.textCursor()
             hi_selection.cursor.clearSelection()
             self.setExtraSelections([hi_selection])
+
+    def set_change_name(self, tab, change=True):
+        self.has_text_changed = change
+        current_text = tab.tabText(tab.currentIndex()).replace('*', '')
+        if change:
+            tab.setTabText(tab.currentIndex(), current_text + '*')
+        else:
+            tab.setTabText(tab.currentIndex(), current_text.replace('*', ''))
+
