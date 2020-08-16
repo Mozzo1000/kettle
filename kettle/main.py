@@ -160,6 +160,8 @@ class Kettle(QMainWindow):
         return text_editor
 
     def remove_editor(self, index):
+        if index is False:
+            index = self.tab_widget.currentIndex()
         self.tab_widget.removeTab(index)
         if index < len(self.editors):
             del self.editors[index]
@@ -296,6 +298,10 @@ class Kettle(QMainWindow):
 
         about_action = QAction('About', self)
         about_action.triggered.connect(self.open_about)
+        
+        close_current_editor_action = QAction('Close current file', self)
+        close_current_editor_action.triggered.connect(self.remove_editor)
+        close_current_editor_action.setShortcut('Ctrl+W')
 
         menubar = self.menuBar()
         file_menu = menubar.addMenu('&File')
@@ -309,6 +315,7 @@ class Kettle(QMainWindow):
         file_menu.addAction(open_proj_action)
         file_menu.addAction(save_action)
         file_menu.addAction(save_as_action)
+        file_menu.addAction(close_current_editor_action)
         file_menu.addAction(settings_action)
         file_menu.addAction(exit_action)
 
