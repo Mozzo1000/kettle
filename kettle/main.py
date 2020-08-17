@@ -13,6 +13,7 @@ from PyQt5.QtCore import QFile, QTextStream, QUrl, Qt
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from ui.settings import Settings
 from ui.about import About
+from ui.notes_project import CreateNotesProject
 from config import Config
 from utils import basedir
 from theme import Theme
@@ -190,6 +191,12 @@ class Kettle(QMainWindow):
         notes_graph = NotesGraph()
         self.addDockWidget(Qt.BottomDockWidgetArea, notes_graph)
 
+    def create_notes_project(self):
+        notes_project = CreateNotesProject(self)
+        notes_project.show()
+
+
+
     def init_ui(self):
         self.resize(800, 600)
         self.setWindowTitle('Kettle')
@@ -319,6 +326,9 @@ class Kettle(QMainWindow):
         open_notes_graph_action = QAction('Open notes', self)
         open_notes_graph_action.triggered.connect(self.open_notes_graph)
 
+        create_new_notes_project_action = QAction('Create notes project', self)
+        create_new_notes_project_action.triggered.connect(self.create_notes_project)
+
         menubar = self.menuBar()
         notes_menu = QMenu('Notes', self)
 
@@ -329,6 +339,7 @@ class Kettle(QMainWindow):
         help_menu = menubar.addMenu('&Help')
 
         notes_menu.addAction(open_notes_graph_action)
+        notes_menu.addAction(create_new_notes_project_action)
 
         file_menu.addAction(new_action)
         file_menu.addAction(open_action)
