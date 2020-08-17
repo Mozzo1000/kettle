@@ -1,13 +1,14 @@
 import random
+import os
 from PyQt5.QtWidgets import QDockWidget, QGraphicsScene, QGraphicsView, QGraphicsItem, QGraphicsLineItem, \
-    QGraphicsEllipseItem, QGraphicsTextItem
+    QGraphicsEllipseItem, QGraphicsTextItem, QLabel
 from PyQt5.QtGui import QBrush, QPen, QColor
 from PyQt5.QtCore import Qt, QLineF, QRectF
 
 
 class NotesGraph(QDockWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
         self.setWindowTitle('Notes graph')
         self.setMinimumHeight(400)
         self.zoom = 0
@@ -21,6 +22,15 @@ class NotesGraph(QDockWidget):
         self.graphic_view.setDragMode(self.graphic_view.ScrollHandDrag)
 
         self.setWidget(self.graphic_view)
+
+        if not os.path.isdir(os.path.join(parent.project_folder, '.notes')):
+            label = QGraphicsTextItem('Current project is not a note project')
+            self.scene.addItem(label)
+        else:
+            for files in os.listdir(parent.project_folder):
+                if not files.startswith('.'):
+                    node = Node(os.path.basename(os.path.normpath(files)))
+                    self.scene.addItem(node)
 
     def mouseDoubleClickEvent(self, event):
         self.scene.clear()

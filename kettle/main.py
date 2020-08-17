@@ -147,6 +147,7 @@ class Kettle(QMainWindow):
         self.treeView.setHeaderHidden(False)
         self.treeView.setHeaderLabel(os.path.basename(os.path.normpath(proj_folder)))
         config.update_config('General', 'last_opened_project', proj_folder)
+        self.project_folder = proj_folder
 
     def open_settings(self):
         settings = Settings(self, themes)
@@ -188,7 +189,7 @@ class Kettle(QMainWindow):
         self.tab_widget.setCurrentWidget(self.current_editor)
 
     def open_notes_graph(self):
-        notes_graph = NotesGraph()
+        notes_graph = NotesGraph(self)
         self.addDockWidget(Qt.BottomDockWidgetArea, notes_graph)
 
     def create_notes_project(self):
@@ -250,6 +251,7 @@ class Kettle(QMainWindow):
 
         if config.get_setting('General', 'last_opened_project'):
             self.load_project_structure(config.get_setting('General', 'last_opened_project'), self.treeView)
+            self.project_folder = config.get_setting('General', 'last_opened_project')
 
         exit_action = QAction(QIcon('exit.png'), '&Exit', self)
         exit_action.setShortcut('Ctrl+Q')
