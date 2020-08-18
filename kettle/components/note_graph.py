@@ -1,7 +1,7 @@
 import random
 import os
 from PyQt5.QtWidgets import QDockWidget, QGraphicsScene, QGraphicsView, QGraphicsItem, QGraphicsLineItem, \
-    QGraphicsEllipseItem, QGraphicsTextItem, QLabel
+    QGraphicsEllipseItem, QGraphicsTextItem, QLabel, QMessageBox
 from PyQt5.QtGui import QBrush, QPen, QColor
 from PyQt5.QtCore import Qt, QLineF, QRectF
 
@@ -9,6 +9,7 @@ from PyQt5.QtCore import Qt, QLineF, QRectF
 class NotesGraph(QDockWidget):
     def __init__(self, parent):
         super().__init__(parent)
+        self.parent = parent
         self.setWindowTitle('Notes graph')
         self.setMinimumHeight(400)
         self.zoom = 0
@@ -30,6 +31,7 @@ class NotesGraph(QDockWidget):
             for files in os.listdir(parent.project_folder):
                 if not files.startswith('.'):
                     node = Node(os.path.basename(os.path.normpath(files)))
+                    node.set_screen(parent)
                     self.scene.addItem(node)
 
     def mouseDoubleClickEvent(self, event):
@@ -44,6 +46,7 @@ class NotesGraph(QDockWidget):
             rand2 = random.randrange(0, len(node_list))
             edge = Edge(node_list[rand], node_list[rand2])
             self.scene.addItem(edge)
+
 
 
 class Node(QGraphicsEllipseItem):
@@ -64,6 +67,11 @@ class Node(QGraphicsEllipseItem):
         self.text.setPos(-float(len(self.text.toPlainText())), -20.0)
         self.text.setParentItem(self)
 
+        self.screen = ''
+
+    def set_screen(self, screen):
+        self.screen = screen
+
     def addEdge(self, edge):
         self.edges.append(edge)
 
@@ -79,6 +87,18 @@ class Node(QGraphicsEllipseItem):
                 edge.adjust()
 
         return QGraphicsItem.itemChange(self, change, value)
+
+    def mouseDoubleClickEvent(self, event):
+        try:
+            file = open(os.path.join(self.screen.project_folder, self.text.toPlainText()), 'r', encoding='utf-8', errors='ignore')
+
+            with file:
+                text = file.read()
+                self.screen.new_document(title=self.text.toPlainText())
+                self.screen.current_editor.setPlainText(text)
+                self.screen.current_editor.set_change_name(self.screen.tab_widget, False)
+        except FileNotFoundError as error:
+            QMessageBox.question(self.screen, 'Error', 'Error occured : ' + str(error), QMessageBox.Close)
 
 
 class Edge(QGraphicsLineItem):
