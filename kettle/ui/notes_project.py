@@ -42,7 +42,6 @@ class CreateNotesProject(QMainWindow):
 
 
     def on_text_changed(self):
-        print("ON TEXT CHANGED")
         if self.project_name.text() and self.folder_selected:
             self.create_button.setEnabled(True)
         if not self.project_name.text():
@@ -57,10 +56,8 @@ class CreateNotesProject(QMainWindow):
             self.folder_selected = True
             if self.project_name.text():
                 self.create_button.setEnabled(True)
-            print(self.browse_folder.selectedFiles()[0])
 
     def create_project(self):
-        print('create project folder..')
         whole_project_path = self.browse_folder.selectedFiles()[0] + '/' + self.project_name.text()
         if not os.path.exists(whole_project_path):
             os.makedirs(whole_project_path)
