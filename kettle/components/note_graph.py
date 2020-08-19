@@ -47,20 +47,6 @@ class NotesGraph(QDockWidget):
                             edge = Edge(key, i)
                             self.scene.addItem(edge)
 
-    def mouseDoubleClickEvent(self, event):
-        self.scene.clear()
-        node_list = []
-        for i in range(10):
-            node = Node("test - " + str(i))
-            self.scene.addItem(node)
-            node_list.append(node)
-        for i2 in range(len(node_list)):
-            rand = random.randrange(0, len(node_list))
-            rand2 = random.randrange(0, len(node_list))
-            edge = Edge(node_list[rand], node_list[rand2])
-            self.scene.addItem(edge)
-
-
 
 class Node(QGraphicsEllipseItem):
     def __init__(self, name, rect=QRectF(0, 0, 20, 20), parent=None):
