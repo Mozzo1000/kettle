@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QDockWidget, QGraphicsScene, QGraphicsView, QGraphic
     QGraphicsEllipseItem, QGraphicsTextItem, QLabel, QMessageBox
 from PyQt5.QtGui import QBrush, QPen, QColor
 from PyQt5.QtCore import Qt, QLineF, QRectF
+from services.backlink_indexer import BacklinkIndexer
 
 
 class NotesGraph(QDockWidget):
@@ -24,6 +25,9 @@ class NotesGraph(QDockWidget):
 
         self.setWidget(self.graphic_view)
 
+        node_list = []
+        link_index = BacklinkIndexer(parent.project_folder)
+
         if not os.path.isdir(os.path.join(parent.project_folder, '.notes')):
             label = QGraphicsTextItem('Current project is not a note project')
             self.scene.addItem(label)
@@ -31,8 +35,17 @@ class NotesGraph(QDockWidget):
             for files in os.listdir(parent.project_folder):
                 if not files.startswith('.'):
                     node = Node(os.path.basename(os.path.normpath(files)))
+                    link_index.add(files, node)
                     node.set_screen(parent)
+                    node_list.append(node)
                     self.scene.addItem(node)
+
+            for key in link_index.get_links():
+                for i2 in link_index.get_links()[key]:
+                    for i in node_list:
+                        if i.text.toPlainText() == i2:
+                            edge = Edge(key, i)
+                            self.scene.addItem(edge)
 
     def mouseDoubleClickEvent(self, event):
         self.scene.clear()
