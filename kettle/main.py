@@ -21,6 +21,7 @@ from components.editor import CodeEditor
 from components.HTMLPreview import HTMLPreview
 from components.markdown_preview import MarkdownPreview
 from components.note_graph import NotesGraph
+from components.statusbar import Statusbar
 
 app = QApplication(sys.argv)
 config = Config(os.path.expanduser('~/.kettle/'), 'config.ini')
@@ -76,14 +77,6 @@ class Kettle(QMainWindow):
         run = subprocess.run([sys.executable, self.filename], stdout=subprocess.PIPE)
         print(run.stdout)
 
-    def view_status(self, state):
-        if state:
-            self.statusbar.show()
-            config.update_config('view', 'view_statusbar', 'True')
-        else:
-            self.statusbar.hide()
-            config.update_config('view', 'view_statusbar', 'False')
-
     def view_projectview(self, state):
         if state:
             self.dock_widget.show()
@@ -91,12 +84,6 @@ class Kettle(QMainWindow):
         else:
             self.dock_widget.hide()
             config.update_config('view', 'view_projectview', 'False')
-
-    def status_line_position(self):
-        line = self.current_editor.textCursor().blockNumber()
-        column = self.current_editor.textCursor().columnNumber()
-        line_column = ("Line: " + str(line) + " | " + "Column: " + str(column))
-        self.statusbar.showMessage(line_column)
 
     def load_project_structure(self, startpath, tree):
         for element in os.listdir(startpath):
@@ -183,7 +170,7 @@ class Kettle(QMainWindow):
 
     def new_document(self, checked=False, title="Untitled"):
         self.current_editor = self.create_editor()
-        self.current_editor.cursorPositionChanged.connect(self.status_line_position)
+        self.current_editor.cursorPositionChanged.connect(self.statusbar.status_line_position)
         self.editors.append(self.current_editor)
         self.tab_widget.addTab(self.current_editor, str(title) + " - " + str(len(self.editors)))
         self.tab_widget.setCurrentWidget(self.current_editor)
@@ -213,7 +200,9 @@ class Kettle(QMainWindow):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
         self.setSizePolicy(sizePolicy)
-        self.statusbar = self.statusBar()
+        #self.statusbar = self.statusBar()
+        self.statusbar = Statusbar(self)
+        self.setStatusBar(self.statusbar)
 
         self.horizontal_layoutW = QWidget(self.central_widget)
         self.splitter = QSplitter(self.central_widget)
@@ -245,9 +234,6 @@ class Kettle(QMainWindow):
 
         self.statusbar.showMessage('Line 0 | Column 0')
         self.splitter.setSizes([5, 300])
-
-        if not utils.str2bool(config.get_setting('view', 'view_statusbar')):
-            self.statusbar.hide()
 
         if config.get_setting('General', 'last_opened_project'):
             self.load_project_structure(config.get_setting('General', 'last_opened_project'), self.treeView)
@@ -310,7 +296,7 @@ class Kettle(QMainWindow):
 
         view_status_action = QAction('View statusbar', self, checkable=True)
         view_status_action.setChecked(utils.str2bool(config.get_setting('view', 'view_statusbar')))
-        view_status_action.triggered.connect(self.view_status)
+        view_status_action.triggered.connect(self.statusbar.view_status)
         view_projectview_action = QAction('View project view', self, checkable=True)
         view_projectview_action.setChecked(utils.str2bool(config.get_setting('view', 'view_projectview', 'True')))
         view_projectview_action.triggered.connect(self.view_projectview)
