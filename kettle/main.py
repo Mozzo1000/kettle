@@ -311,7 +311,7 @@ class Kettle(QMainWindow):
         close_current_editor_action.triggered.connect(self.remove_editor)
         close_current_editor_action.setShortcut('Ctrl+W')
 
-        open_notes_graph_action = QAction('Open notes', self)
+        open_notes_graph_action = QAction('Open graph', self)
         open_notes_graph_action.triggered.connect(self.open_notes_graph)
 
         create_new_notes_project_action = QAction('Create notes project', self)
