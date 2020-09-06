@@ -1,8 +1,8 @@
 import random
 import os
 from PyQt5.QtWidgets import QDockWidget, QGraphicsScene, QGraphicsView, QGraphicsItem, QGraphicsLineItem, \
-    QGraphicsEllipseItem, QGraphicsTextItem, QLabel, QMessageBox
-from PyQt5.QtGui import QBrush, QPen, QColor
+    QGraphicsEllipseItem, QGraphicsTextItem, QLabel, QMessageBox, QGraphicsTextItem
+from PyQt5.QtGui import QBrush, QPen, QColor, QFont
 from PyQt5.QtCore import Qt, QLineF, QRectF
 from services.backlink_indexer import BacklinkIndexer
 
@@ -46,6 +46,16 @@ class NotesGraph(QDockWidget):
                         if i.text.toPlainText() == i2:
                             edge = Edge(key, i)
                             self.scene.addItem(edge)
+        info_text_title = QGraphicsTextItem("Information")
+        info_text_title.setFont(QFont("", weight=QFont.Bold))
+        info_text = QGraphicsTextItem(f'Files: {len(node_list)}\n'
+                                      f'Links: {len(link_index.get_links())}')
+        info_text.setPos(0, 15)
+        self.scene.addItem(info_text_title)
+        self.scene.addItem(info_text)
+
+
+
 
 
 class Node(QGraphicsEllipseItem):
