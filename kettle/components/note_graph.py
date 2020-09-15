@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QDockWidget, QGraphicsScene, QGraphicsView, QGraphic
 from PyQt5.QtGui import QBrush, QPen, QColor, QFont
 from PyQt5.QtCore import Qt, QLineF, QRectF
 from services.backlink_indexer import BacklinkIndexer
+from utils import convert_size
 
 
 class NotesGraph(QDockWidget):
@@ -38,6 +39,10 @@ class NotesGraph(QDockWidget):
                     link_index.add(files, node)
                     node.set_screen(parent)
                     node_list.append(node)
+                    print()
+                    node.setToolTip(f"Filename: {files}\nFilesize:"
+                                    f" {convert_size(os.path.getsize(os.path.join(parent.project_folder, files)))}\n\n"
+                                    f"Double click to open!")
                     self.scene.addItem(node)
 
             for key in link_index.get_links():
